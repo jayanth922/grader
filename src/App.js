@@ -1,18 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import Amplify, { Auth } from 'aws-amplify';
-import { withAuthenticator } from '@aws-amplify/ui-react';
+import React, { useState } from 'react';
 import './App.css';
 
 const App = () => {
   const [code, setCode] = useState('');
   const [results, setResults] = useState('');
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    Auth.currentAuthenticatedUser()
-      .then(user => setUser(user))
-      .catch(() => setUser(null));
-  }, []);
 
   const problemStatement = `
   Write a function called 'matrix_multiply' that takes two matrices 'A' and 'B' (represented as lists of lists) 
@@ -31,7 +22,7 @@ const App = () => {
     const response = await fetch('https://na8xlb76ob.execute-api.ap-south-1.amazonaws.com/submit', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code: submittedCode, student_id: user.username }),
+      body: JSON.stringify({ code: submittedCode, student_id: 'example-student-id' }), // replace with actual student ID if needed
     });
     const data = await response.json();
     setResults(data);
@@ -59,9 +50,8 @@ const App = () => {
           <pre>{JSON.stringify(results, null, 2)}</pre>
         </div>
       )}
-      <button onClick={() => Auth.signOut()}>Sign Out</button>
     </div>
   );
 };
 
-export default withAuthenticator(App);
+export default App;
