@@ -1,10 +1,21 @@
-import React, { useState } from 'react';
-import './App.css'; // Make sure to create and import this CSS file
+import React, { useState, useEffect } from 'react';
+import Amplify, { Auth } from 'aws-amplify';
+import awsconfig from './aws-exports';
+import { withAuthenticator } from '@aws-amplify/ui-react';
+import './App.css';
 
+Amplify.configure(awsconfig);
 
 const App = () => {
   const [code, setCode] = useState('');
   const [results, setResults] = useState('');
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    Auth.currentAuthenticatedUser()
+      .then(user => setUser(user))
+      .catch(() => setUser(null));
+  }, []);
 
   const problemStatement = `
   Write a function called 'matrix_multiply' that takes two matrices 'A' and 'B' (represented as lists of lists) 
@@ -23,10 +34,20 @@ const App = () => {
     const response = await fetch('https://na8xlb76ob.execute-api.ap-south-1.amazonaws.com/submit', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code: submittedCode, student_id: 'example-student-id' }), // replace with actual student ID
+      body: JSON.stringify({ code: submittedCode, student_id: user.username }),
     });
     const data = await response.json();
     setResults(data);
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await Auth.signOut({ global: true });
+      // Redirect to Cognito Hosted UI sign-in page after sign-out
+      window.location.href = 'https://anythin.auth.ap-south-1.amazoncognito.com/login?response_type=code&client_id=7g07c69jqtppuohu4scu1clla8&redirect_uri=https://main.d2mh1m8k6z345h.amplifyapp.com';
+    } catch (error) {
+      console.error('Error signing out: ', error);
+    }
   };
 
   return (
@@ -51,8 +72,9 @@ const App = () => {
           <pre>{JSON.stringify(results, null, 2)}</pre>
         </div>
       )}
+      <button onClick={handleSignOut}>Sign Out</button>
     </div>
   );
 };
 
-export default App;
+export default withAuthenticator(App);
