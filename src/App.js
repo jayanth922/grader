@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Amplify, { Auth } from 'aws-amplify';
-import awsconfig from './aws-exports';
 import { withAuthenticator } from '@aws-amplify/ui-react';
 import './App.css';
-
-Amplify.configure(awsconfig);
 
 const App = () => {
   const [code, setCode] = useState('');
