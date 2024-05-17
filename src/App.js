@@ -40,16 +40,6 @@ const App = () => {
     setResults(data);
   };
 
-  const handleSignOut = async () => {
-    try {
-      await Auth.signOut({ global: true });
-      // Redirect to Cognito Hosted UI sign-in page after sign-out
-      window.location.href = 'https://anythin.auth.ap-south-1.amazoncognito.com/login?response_type=code&client_id=7g07c69jqtppuohu4scu1clla8&redirect_uri=https://main.d2mh1m8k6z345h.amplifyapp.com';
-    } catch (error) {
-      console.error('Error signing out: ', error);
-    }
-  };
-
   return (
     <div className="app-container">
       <h1>Auto Grader</h1>
@@ -72,7 +62,7 @@ const App = () => {
           <pre>{JSON.stringify(results, null, 2)}</pre>
         </div>
       )}
-      <button onClick={handleSignOut}>Sign Out</button>
+      <button onClick={() => Auth.signOut()}>Sign Out</button>
     </div>
   );
 };
