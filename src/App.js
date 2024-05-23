@@ -31,7 +31,7 @@ const App = () => {
     const response = await fetch('https://na8xlb76ob.execute-api.ap-south-1.amazonaws.com/submit', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code: submittedCode, student_id: 'example-student-id' }), // replace with actual student ID if needed
+      body: JSON.stringify({ code: submittedCode, student_id: 'example-student-id' }),
     });
     const data = await response.json();
     setResults(data);
